@@ -18,6 +18,7 @@
     <item android:id="@+id/action_map"
         android:title="@string/action_map"
         android:orderInCategory="3"
-        app:showAsAction="ifRoom|withText" />
+        app:showAsAction="ifRoom|withText"
+        android:icon="@drawable/map" />
 
 </menu>
