@@ -3,15 +3,22 @@ package es.zgzappstore.equipoa.handicapp;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+
 
 public class MapActivity extends ActionBarActivity {
+
+    GoogleMap map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +34,11 @@ public class MapActivity extends ActionBarActivity {
                 startActivity(intent);
             }
         });
+
+        LatLng ll = new LatLng(41.6532341,-0.8870108);
+        float zoom = (float) 12.0;
+        map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
+        map.animateCamera(CameraUpdateFactory.newLatLngZoom(ll, zoom));
     }
 
     @Override
