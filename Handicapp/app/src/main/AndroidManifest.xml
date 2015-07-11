@@ -45,6 +45,10 @@
             android:name=".AddPointActivity"
             android:label="@string/title_activity_add_point" >
         </activity>
+        <activity
+            android:name=".RestaurantActivity"
+            android:label="@string/title_activity_details" >
+        </activity>
     </application>
 
 </manifest>

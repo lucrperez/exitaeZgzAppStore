@@ -16,8 +16,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ListView;
 
 import com.google.android.gms.maps.model.LatLng;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,6 +39,8 @@ public class ListsActivity extends ActionBarActivity implements ActionBar.TabLis
 
     SectionsPagerAdapter mSectionsPagerAdapter;
     ViewPager mViewPager;
+
+    private static int total;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,27 +207,61 @@ public class ListsActivity extends ActionBarActivity implements ActionBar.TabLis
 
     public static class RestaurantsFragment extends Fragment {
 
+        ListView lvRestaurants;
+        MySimpleAdapter adapter;
+
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             //return super.onCreateView(inflater, container, savedInstanceState);
             View rootView = inflater.inflate(R.layout.fragment_restaurants, container, false);
+            lvRestaurants = (ListView) rootView.findViewById(R.id.restaurants_list);
+            lvRestaurants.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    int itemID = ((SimpleItem) lvRestaurants.getItemAtPosition(position)).getID();
+                    if (itemID == -1) {
+                        return;
+                    }
+
+                    Intent intent = new Intent();
+                    intent.setClass(getActivity().getApplicationContext(), RestaurantActivity.class);
+                    intent.putExtra("LugarID", itemID);
+                    startActivity(intent);
+                }
+            });
 
             new DownloadRestaurants().execute();
 
             return rootView;
         }
 
+        private ArrayList<SimpleItem> generateData(ArrayList<Restaurants> list) {
+            ArrayList<SimpleItem> items = new ArrayList<SimpleItem>();
 
-        private class DownloadRestaurants extends AsyncTask<Void, Void, ArrayList<LatLng>> {
+            int nulos = 0;
+            for (Restaurants r : list) {
+                if (r != null) {
+                    items.add(new SimpleItem(r.getId(), r.getTitle()));
+                } else {
+                    items.add(new SimpleItem(nulos, "NULO"));
+                    nulos++;
+                }
+            }
+
+            return items;
+        }
+
+
+        private class DownloadRestaurants extends AsyncTask<Void, Void, ArrayList<Restaurants>> {
 
             @Override
-            protected ArrayList<LatLng> doInBackground(Void... params) {
+            protected ArrayList<Restaurants> doInBackground(Void... params) {
 
                 InputStream is = null;
                 String response = "";
 
                 try {
-                    URL url = new URL("http://www.zaragoza.es/api/recurso/turismo/restaurante.json?start=0&rows=1000&fl=title,streetAddress,addressLocality,accesibilidad,tel,email,url,image,logo,comment,tenedores,capacidad,geometry,link");
+                    URL url = new URL("http://www.zaragoza.es/api/recurso/turismo/restaurante.json?start=0&rows=1000&fl=id,title,streetAddress,addressLocality,accesibilidad,tel,email,url,image,logo,comment,tenedores,capacidad,geometry,link");
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setReadTimeout(10000 /* milliseconds */);
                     conn.setConnectTimeout(15000 /* milliseconds */);
@@ -234,6 +276,50 @@ public class ListsActivity extends ActionBarActivity implements ActionBar.TabLis
                     is.close();
 
                 } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    JSONObject json = new JSONObject(response);
+                    total = json.getInt("totalCount");
+
+                    JSONArray array = json.getJSONArray("result");
+
+                    ArrayList<Restaurants> items = new ArrayList<Restaurants>();
+
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject obj = array.getJSONObject(i);
+
+                        Restaurants restaurant = new Restaurants();
+                        LatLng ll;
+
+                        if (obj.has("accesibilidad")) restaurant.setAccesibilidad(obj.getString("accesibilidad"));
+                        else continue;
+                        if (obj.has("id")) restaurant.setId(obj.getInt("id"));
+                        if (obj.has("title")) restaurant.setTitle(obj.getString("title"));
+                        /*if (obj.has("streetAddress")) restaurant.setStreetAddress(obj.getString("streetAddress"));
+                        if (obj.has("addressLocality")) restaurant.setAddressLocality(obj.getString("addressLocality"));
+                        if (obj.has("tel.tel")) restaurant.setTel(obj.getString("tel.tel"));
+                        if (obj.has("email")) restaurant.setEmail(obj.getString("email"));
+                        if (obj.has("url")) restaurant.setUrl(obj.getString("url"));
+                        if (obj.has("image")) restaurant.setImage(obj.getString("image"));
+                        if (obj.has("logo")) restaurant.setLogo(obj.getString("logo"));
+                        if (obj.has("comment")) restaurant.setComment(obj.getString("comment"));
+                        if (obj.has("link")) restaurant.setLink(obj.getString("link"));
+                        if (obj.has("tenedores")) restaurant.setTenedores(obj.getInt("tenedores"));
+                        if (obj.has("capacidad")) restaurant.setCapacidad(obj.getInt("capacidad"));
+                        if (obj.has("geometry")) {
+                            ll = new LatLng(obj.getDouble("geometry.coordinates[0]"), obj.getDouble("geometry.coordinates[1]"));
+                            restaurant.setGeometry(ll);
+                        }*/
+
+                        items.add(restaurant);
+
+                    }
+
+                    return items;
+
+                } catch (JSONException e) {
                     e.printStackTrace();
                 }
 
@@ -315,8 +401,12 @@ public class ListsActivity extends ActionBarActivity implements ActionBar.TabLis
             }
 
             @Override
-            protected void onPostExecute(ArrayList<LatLng> Listll) {
-                super.onPostExecute(Listll);
+            protected void onPostExecute(ArrayList<Restaurants> restaurants) {
+                super.onPostExecute(restaurants);
+                if (restaurants != null) {
+                    adapter = new MySimpleAdapter(getActivity().getApplicationContext(), generateData(restaurants));
+                    lvRestaurants.setAdapter(adapter);
+                }
             }
         }
 

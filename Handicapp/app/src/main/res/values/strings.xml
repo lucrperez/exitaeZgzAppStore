@@ -19,6 +19,7 @@
     <string name="title_activity_home">Home</string>
     <string name="title_activity_map">Mapa</string>
     <string name="title_activity_lists">Listas</string>
+    <string name="title_activity_details">Restaurantes - Detalles</string>
 
     <!-- Tabs Titles -->
     <string name="tab_restaurants">Restaurantes</string>
