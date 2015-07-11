@@ -34,7 +34,9 @@
 
     <!-- Labels and texts-->
     <string name="lbl_name">Nombre: </string>
+    <string name="hint_name">Nombre del lugar</string>
     <string name="lbl_description">Description: </string>
+    <string name="hint_description">Descripción del lugar</string>
     <string name="lbl_type">Tipo: </string>
     <string name="lbl_exit">Salir de la aplicación.</string>
     <string name="txt_sure_exit">¿Estas seguro que quieres salir de la aplicación?</string>

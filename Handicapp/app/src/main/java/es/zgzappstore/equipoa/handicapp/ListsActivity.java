@@ -91,7 +91,7 @@ public class ListsActivity extends ActionBarActivity implements ActionBar.TabLis
                 break;
             case R.id.action_map:
                 Intent map_intent = new Intent();
-                map_intent.setClass(getApplicationContext(), MainActivity.class);
+                map_intent.setClass(getApplicationContext(), MapActivity.class);
                 startActivity(map_intent);
                 finish();
                 break;
