@@ -3,6 +3,7 @@ package es.zgzappstore.equipoa.handicapp;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -16,6 +17,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.maps.model.LatLng;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.Locale;
 
 
@@ -194,7 +204,120 @@ public class ListsActivity extends ActionBarActivity implements ActionBar.TabLis
             //return super.onCreateView(inflater, container, savedInstanceState);
             View rootView = inflater.inflate(R.layout.fragment_restaurants, container, false);
 
+            new DownloadRestaurants().execute();
+
             return rootView;
+        }
+
+
+        private class DownloadRestaurants extends AsyncTask<Void, Void, ArrayList<LatLng>> {
+
+            @Override
+            protected ArrayList<LatLng> doInBackground(Void... params) {
+
+                InputStream is = null;
+                String response = "";
+
+                try {
+                    URL url = new URL("http://www.zaragoza.es/api/recurso/turismo/restaurante.json?start=0&rows=1000&fl=title,streetAddress,addressLocality,accesibilidad,tel,email,url,image,logo,comment,tenedores,capacidad,geometry,link");
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setReadTimeout(10000 /* milliseconds */);
+                    conn.setConnectTimeout(15000 /* milliseconds */);
+                    conn.setRequestMethod("GET");
+                    conn.setDoInput(true);
+
+                    conn.connect();
+                    is = conn.getInputStream();
+
+                    response = readIt(is);
+
+                    is.close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+
+
+
+
+
+
+                /*String response = null;
+
+                try {
+                    String charset = "UTF-8";
+                    String param1 = "select * , GROUP_CONCAT(result_geometry_coordinates.geometry) as coordinates \n" +
+                            "from result, result_geometry, result_geometry_coordinates \n" +
+                            "where result_geometry.parent_id=result.id and result_geometry_coordinates.parent_id=result_geometry._id\n" +
+                            "GROUP BY result.id;";
+                    URLConnection conn = new URL("https://iescities.com:443/IESCities/api/data/query/279/sql?origin=original").openConnection();
+                    //conn.setReadTimeout(10000);
+                    //conn.setConnectTimeout(15000);
+                    //conn.setRequestMethod("POST");
+                    //conn.setDoInput(true);
+                    conn.setDoOutput(true);
+                    conn.setRequestProperty("Accept-Charset", charset);
+                    conn.setRequestProperty("Content-Type", "text/plain");
+
+                    OutputStream output = conn.getOutputStream();
+                    output.write(param1.getBytes());
+
+
+                    conn.connect();
+                    InputStream is = conn.getInputStream();
+
+                    response = readIt(is);
+
+                    is.close();
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }*/
+
+                /*try {
+                    JSONObject json = new JSONObject(String.valueOf(response));
+                    int total = json.getInt("count");
+
+                    JSONArray array = json.getJSONArray("rows");
+
+                    ArrayList<LatLng> items = new ArrayList<LatLng>();
+
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject obj = array.getJSONObject(i);
+
+                        try {
+                            items.add(new LatLng(obj.getDouble("lat"), obj.getDouble("lng")));
+
+                        } catch (JSONException e) {
+
+                        }
+                    }
+
+                    return items;
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }*/
+
+                return null;
+            }
+
+            public String readIt(InputStream stream) throws IOException {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "utf-8"), 8);
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line + "n");
+                }
+                return sb.toString();
+            }
+
+            @Override
+            protected void onPostExecute(ArrayList<LatLng> Listll) {
+                super.onPostExecute(Listll);
+            }
         }
 
     }
