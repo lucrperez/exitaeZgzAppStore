@@ -1,0 +1,29 @@
+Usuario API IESCities:
+handicapp / handicapp1
+
+Alojamientos Zaragoza: (link, logo, image necesitan concatenar zaragoza.es)
+http://www.zaragoza.es/api/recurso/turismo/alojamiento.json?start=0&rows=150&fl=title,streetAddress,addressLocality,accesibilidad,telefonos,email,url,image,logo,comment,categoria,habitaciones,camas,geometry,link
+
+Restaurantes Zaragoza: (link, logo, image necesitan concatenar zaragoza.es)
+http://www.zaragoza.es/api/recurso/turismo/restaurante.json?start=0&rows=1000&fl=title,streetAddress,addressLocality,accesibilidad,tel,email,url,image,logo,comment,tenedores,capacidad,geometry,link
+
+Aparcamiento minusvalidos:
+http://www.zaragoza.es/api/recurso/urbanismo-infraestructuras/equipamiento/aparcamiento-personas-discapacidad.json?start=0&rows=500&fl=title,geometry
+
+
+DELETE FROM Lugares where title=prueba1;
+
+INSERT INTO Lugares (id, title, description, type, long, lat) VALUES (null, 'Prueba7', 'La prueba', 'Hotel', 2.555, 3.788);
+
+
+
+select result.id, result.title, result.description, result.streetAddress, GROUP_CONCAT(result_geometry_coordinates.geometry) as coordinates 
+from result, result_geometry, result_geometry_coordinates 
+where result_geometry.parent_id=result.id and result_geometry_coordinates.parent_id=result_geometry._id
+GROUP BY result.id;
+
+select * , GROUP_CONCAT(result_geometry_coordinates.geometry) as coordinates 
+from result, result_geometry, result_geometry_coordinates 
+where result_geometry.parent_id=result.id and result_geometry_coordinates.parent_id=result_geometry._id
+GROUP BY result.id;
+
