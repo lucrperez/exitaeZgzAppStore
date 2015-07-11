@@ -11,6 +11,7 @@
     <TextView
         android:id="@+id/row_simple_text"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textColor="@color/material_blue_grey_800"/>
 
 </LinearLayout>

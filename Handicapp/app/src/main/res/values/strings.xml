@@ -25,7 +25,7 @@
     <string name="tab_restaurants">Restaurantes</string>
     <string name="tab_hotels">Alojamientos</string>
     <string name="tab_suggestions">sugerencias</string>
-    <string name="title_activity_add_point">AddPointActivity</string>
+    <string name="title_activity_add_point">Añadir Lugar</string>
 
     <!-- Buttons -->
     <string name="button_text_add">Añadir</string>

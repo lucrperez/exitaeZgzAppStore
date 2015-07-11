@@ -63,10 +63,13 @@
                 android:layout_height="wrap_content" />
         </LinearLayout>
         <Button
+            android:background="@color/primary"
+            android:textColor="@android:color/white"
             android:id="@+id/btn_add_accept"
             android:text="@string/button_text_accept"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
     </LinearLayout>
 
 </LinearLayout>
