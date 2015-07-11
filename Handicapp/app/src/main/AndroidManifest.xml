@@ -41,6 +41,10 @@
             android:name=".ListsActivity"
             android:label="@string/title_activity_lists" >
         </activity>
+        <activity
+            android:name=".AddPointActivity"
+            android:label="@string/title_activity_add_point" >
+        </activity>
     </application>
 
 </manifest>

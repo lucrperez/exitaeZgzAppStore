@@ -10,7 +10,9 @@
     <string name="hello_blank_fragment_s">Hello blank fragment SUGGESTIONS</string>
 
     <!-- Action strings -->
-    <string name="action_settings">Settings</string>
+    <string name="action_home">Home</string>
+    <string name="action_lists">Listas</string>
+    <string name="action_map">Mapa</string>
 
     <!-- Activity Titles -->
     <string name="title_activity_main">MainActivity</string>
@@ -18,15 +20,23 @@
     <string name="title_activity_map">Mapa</string>
     <string name="title_activity_lists">Listas</string>
 
-    <!-- Buttons -->
-
-    <!-- Labels -->
-
     <!-- Tabs Titles -->
     <string name="tab_restaurants">Restaurantes</string>
     <string name="tab_hotels">Alojamientos</string>
     <string name="tab_suggestions">sugerencias</string>
+    <string name="title_activity_add_point">AddPointActivity</string>
 
-    <!-- TextFields -->
+    <!-- Buttons -->
+    <string name="button_text_add">Añadir</string>
+    <string name="button_text_accept">Aceptar</string>
+    <string name="button_text_yes">Si</string>
+    <string name="button_text_no">No</string>
+
+    <!-- Labels and texts-->
+    <string name="lbl_name">Nombre: </string>
+    <string name="lbl_description">Description: </string>
+    <string name="lbl_type">Tipo: </string>
+    <string name="lbl_exit">Salir de la aplicación.</string>
+    <string name="txt_sure_exit">¿Estas seguro que quieres salir de la aplicación?</string>
 
 </resources>

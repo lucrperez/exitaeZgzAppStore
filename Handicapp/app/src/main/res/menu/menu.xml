@@ -1,0 +1,21 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="es.zgzappstore.equipoa.handicapp.MainActivity">
+
+    <item android:id="@+id/action_home"
+        android:title="@string/action_home"
+        android:orderInCategory="1"
+        app:showAsAction="ifRoom|withText" />
+
+    <item android:id="@+id/action_lists"
+        android:title="@string/action_lists"
+        android:orderInCategory="2"
+        app:showAsAction="ifRoom|withText" />
+
+    <item android:id="@+id/action_map"
+        android:title="@string/action_map"
+        android:orderInCategory="3"
+        app:showAsAction="ifRoom|withText" />
+
+</menu>

@@ -12,9 +12,14 @@
         android:layout_height="match_parent"
         android:id="@+id/map"
         tools:context=".MapsActivity"
-        android:name="com.google.android.gms.maps.SupportMapFragment" />
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_weight="0.9" />
     <Button
+        android:id="@+id/btn_maps_addpoint"
+        android:text="@string/button_text_add"
+        android:layout_gravity="center"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_weight="0.1" />
 
 </LinearLayout>
