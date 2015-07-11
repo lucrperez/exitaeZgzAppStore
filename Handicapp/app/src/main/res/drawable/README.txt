@@ -1,0 +1,1 @@
+Aqui van todas las imagenes y las fotos que guardemos en la app (NO los iconos)

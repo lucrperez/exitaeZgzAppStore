@@ -82,12 +82,12 @@ public class ListsActivity extends ActionBarActivity implements ActionBar.TabLis
 
         switch (id) {
             case R.id.action_home:
-                break;
-            case R.id.action_lists:
                 Intent list_intent = new Intent();
-                list_intent.setClass(getApplicationContext(), ListsActivity.class);
+                list_intent.setClass(getApplicationContext(), HomeActivity.class);
                 startActivity(list_intent);
                 finish();
+                break;
+            case R.id.action_lists:
                 break;
             case R.id.action_map:
                 Intent map_intent = new Intent();

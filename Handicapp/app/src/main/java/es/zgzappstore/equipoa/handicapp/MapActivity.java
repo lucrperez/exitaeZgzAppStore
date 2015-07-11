@@ -45,6 +45,10 @@ public class MapActivity extends ActionBarActivity {
 
         switch (id) {
             case R.id.action_home:
+                Intent map_intent = new Intent();
+                map_intent.setClass(getApplicationContext(), HomeActivity.class);
+                startActivity(map_intent);
+                finish();
                 break;
             case R.id.action_lists:
                 Intent list_intent = new Intent();
@@ -53,10 +57,6 @@ public class MapActivity extends ActionBarActivity {
                 finish();
                 break;
             case R.id.action_map:
-                Intent map_intent = new Intent();
-                map_intent.setClass(getApplicationContext(), MainActivity.class);
-                startActivity(map_intent);
-                finish();
                 break;
         }
 
