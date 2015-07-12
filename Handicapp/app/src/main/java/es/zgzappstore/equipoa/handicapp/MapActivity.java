@@ -219,13 +219,15 @@ public class MapActivity extends ActionBarActivity {
         protected void onPostExecute(ArrayList<Lugares> Listll) {
             super.onPostExecute(Listll);
 
-            for (Lugares ll : Listll) {
-                map.addMarker(new MarkerOptions()
-                        .position(ll.getGeometry())
-                        .draggable(false)
-                        .visible(true)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                        .title(ll.getTitle()));
+            if (Listll != null) {
+                for (Lugares ll : Listll) {
+                    map.addMarker(new MarkerOptions()
+                            .position(ll.getGeometry())
+                            .draggable(false)
+                            .visible(true)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                            .title(ll.getTitle()));
+                }
             }
         }
     }
@@ -304,14 +306,15 @@ public class MapActivity extends ActionBarActivity {
         @Override
         protected void onPostExecute(ArrayList<LatLng> Listll) {
             super.onPostExecute(Listll);
-
-            for (LatLng ll : Listll) {
-                map.addMarker(new MarkerOptions()
-                        .position(ll)
-                        .draggable(false)
-                        .visible(true)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                        .title("Estacionamiento para discapacitados"));
+            if (Listll != null) {
+                for (LatLng ll : Listll) {
+                    map.addMarker(new MarkerOptions()
+                            .position(ll)
+                            .draggable(false)
+                            .visible(true)
+                            .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                            .title("Estacionamiento para discapacitados"));
+                }
             }
         }
     }

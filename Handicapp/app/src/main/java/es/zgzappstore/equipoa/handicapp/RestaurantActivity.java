@@ -226,20 +226,20 @@ public class RestaurantActivity extends ActionBarActivity {
         protected void onPostExecute(Restaurants restaurant) {
             super.onPostExecute(restaurant);
 
-            String title = getResources().getString(R.string.lbl_name);
-            String address = getResources().getString(R.string.lbl_address);
+            //String title = getResources().getString(R.string.lbl_name);
+            //String address = getResources().getString(R.string.lbl_address);
             String phone = getResources().getString(R.string.lbl_phone);
-            String email = getResources().getString(R.string.lbl_email);
-            String comment = getResources().getString(R.string.lbl_comment);
+            //String email = getResources().getString(R.string.lbl_email);
+            //String comment = getResources().getString(R.string.lbl_comment);
             String capacity = getResources().getString(R.string.lbl_capacity);
             String forks = getResources().getString(R.string.lbl_fork);
 
-            tvTitle.setText(title + restaurant.getTitle());
-            tvAddress.setText(address + restaurant.getStreetAddress() + ", " + restaurant.getAddressLocality());
+            tvTitle.setText(restaurant.getTitle());
+            tvAddress.setText(restaurant.getStreetAddress() + ", " + restaurant.getAddressLocality());
             tvPhone.setText(phone + restaurant.getTel());
-            tvEmail.setText(email + restaurant.getEmail());
+            tvEmail.setText(restaurant.getEmail());
             tvUrl.setText(restaurant.getUrl());
-            tvComment.setText(comment + restaurant.getComment());
+            tvComment.setText(restaurant.getComment());
             tvCapacity.setText(capacity + restaurant.getCapacidad());
             tvForks.setText(forks + restaurant.getTenedores());
             tvAccessibility.setText(Html.fromHtml(restaurant.getAccesibilidad()));

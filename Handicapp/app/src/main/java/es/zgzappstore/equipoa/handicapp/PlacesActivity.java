@@ -152,11 +152,11 @@ public class PlacesActivity extends ActionBarActivity {
                 float zoom = (float) 15.0;
                 map.animateCamera(CameraUpdateFactory.newLatLngZoom(l.getGeometry(), zoom));
 
-                String title = getResources().getString(R.string.lbl_name);
+                //String title = getResources().getString(R.string.lbl_name);
                 String comment = getResources().getString(R.string.lbl_comment);
 
-                tvTitle.setText(title + l.getTitle());
-                tvDescription.setText(comment + l.getDescription());
+                tvTitle.setText(l.getTitle());
+                tvDescription.setText(l.getDescription());
             }
         }
     }

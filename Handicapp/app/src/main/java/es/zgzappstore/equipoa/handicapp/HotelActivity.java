@@ -221,20 +221,20 @@ public class HotelActivity extends ActionBarActivity {
         protected void onPostExecute(Hotels hotel) {
             super.onPostExecute(hotel);
 
-            String title = getResources().getString(R.string.lbl_name);
-            String address = getResources().getString(R.string.lbl_address);
+            //String title = getResources().getString(R.string.lbl_name);
+            //String address = getResources().getString(R.string.lbl_address);
             String phone = getResources().getString(R.string.lbl_phone);
-            String email = getResources().getString(R.string.lbl_email);
-            String comment = getResources().getString(R.string.lbl_comment);
+            //String email = getResources().getString(R.string.lbl_email);
+            //String comment = getResources().getString(R.string.lbl_comment);
             String rooms = getResources().getString(R.string.lbl_rooms);
             String beds = getResources().getString(R.string.lbl_beds);
 
-            tvTitle.setText(title + hotel.getTitle());
-            tvAddress.setText(address + hotel.getStreetAddress() + ", " + hotel.getAddressLocality());
+            tvTitle.setText(hotel.getTitle());
+            tvAddress.setText(hotel.getStreetAddress() + ", " + hotel.getAddressLocality());
             tvPhone.setText(phone + hotel.getTelefonos());
-            tvEmail.setText(email + hotel.getEmail());
+            tvEmail.setText(hotel.getEmail());
             tvUrl.setText(hotel.getUrl());
-            tvComment.setText(comment + hotel.getComment());
+            tvComment.setText(hotel.getComment());
             tvRooms.setText(rooms + hotel.getHabitaciones());
             tvBeds.setText(beds + hotel.getCamas());
             tvCategory.setText(hotel.getCategoria());

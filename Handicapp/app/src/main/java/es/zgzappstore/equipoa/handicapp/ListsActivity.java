@@ -218,24 +218,35 @@ public class ListsActivity extends ActionBarActivity implements ActionBar.TabLis
             //return super.onCreateView(inflater, container, savedInstanceState);
             View rootView = inflater.inflate(R.layout.fragment_restaurants, container, false);
             lvRestaurants = (ListView) rootView.findViewById(R.id.restaurants_list);
+            adapter = new MySimpleAdapter(getActivity().getApplicationContext(), generateData());
+            lvRestaurants.setAdapter(adapter);
             lvRestaurants.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     int itemID = ((SimpleItem) lvRestaurants.getItemAtPosition(position)).getID();
                     if (itemID == -1) {
                         return;
-                    }
+                    } else {
 
-                    Intent intent = new Intent();
-                    intent.setClass(getActivity().getApplicationContext(), RestaurantActivity.class);
-                    intent.putExtra("LugarID", itemID);
-                    startActivity(intent);
+                        Intent intent = new Intent();
+                        intent.setClass(getActivity().getApplicationContext(), RestaurantActivity.class);
+                        intent.putExtra("LugarID", itemID);
+                        startActivity(intent);
+                    }
                 }
             });
 
             new DownloadRestaurants().execute();
 
             return rootView;
+        }
+
+        private ArrayList<SimpleItem> generateData() {
+            ArrayList<SimpleItem> items = new ArrayList<SimpleItem>();
+
+            items.add(new SimpleItem(-1, "Cargando datos..."));
+
+            return items;
         }
 
         private ArrayList<SimpleItem> generateData(ArrayList<Restaurants> list) {
@@ -425,18 +436,21 @@ public class ListsActivity extends ActionBarActivity implements ActionBar.TabLis
             //return super.onCreateView(inflater, container, savedInstanceState);
             View rootView = inflater.inflate(R.layout.fragment_hotels, container, false);
             lvHotels = (ListView) rootView.findViewById(R.id.hotels_list);
+            adapter = new MySimpleAdapter(getActivity().getApplicationContext(), generateData());
+            lvHotels.setAdapter(adapter);
             lvHotels.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     int itemID = ((SimpleItem) lvHotels.getItemAtPosition(position)).getID();
                     if (itemID == -1) {
                         return;
-                    }
+                    } else {
 
-                    Intent intent = new Intent();
-                    intent.setClass(getActivity().getApplicationContext(), HotelActivity.class);
-                    intent.putExtra("LugarID", itemID);
-                    startActivity(intent);
+                        Intent intent = new Intent();
+                        intent.setClass(getActivity().getApplicationContext(), HotelActivity.class);
+                        intent.putExtra("LugarID", itemID);
+                        startActivity(intent);
+                    }
                 }
             });
 
@@ -444,6 +458,14 @@ public class ListsActivity extends ActionBarActivity implements ActionBar.TabLis
 
 
             return rootView;
+        }
+
+        private ArrayList<SimpleItem> generateData() {
+            ArrayList<SimpleItem> items = new ArrayList<SimpleItem>();
+
+            items.add(new SimpleItem(-1, "Cargando Datos..."));
+
+            return items;
         }
 
         private ArrayList<SimpleItem> generateData(ArrayList<Hotels> list) {
@@ -632,24 +654,35 @@ public class ListsActivity extends ActionBarActivity implements ActionBar.TabLis
             View rootView = inflater.inflate(R.layout.fragment_suggestions, container, false);
 
             lvSuggestions = (ListView) rootView.findViewById(R.id.suggestions_list);
+            adapter = new MySimpleAdapter(getActivity().getApplicationContext(), generateData());
+            lvSuggestions.setAdapter(adapter);
             lvSuggestions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                     int itemID = ((SimpleItem) lvSuggestions.getItemAtPosition(position)).getID();
                     if (itemID == -1) {
                         return;
-                    }
+                    } else {
 
-                    Intent intent = new Intent();
-                    intent.setClass(getActivity().getApplicationContext(), PlacesActivity.class);
-                    intent.putExtra("LugarID", itemID);
-                    startActivity(intent);
+                        Intent intent = new Intent();
+                        intent.setClass(getActivity().getApplicationContext(), PlacesActivity.class);
+                        intent.putExtra("LugarID", itemID);
+                        startActivity(intent);
+                    }
                 }
             });
 
             new DownloadLugares().execute();
 
             return rootView;
+        }
+
+        private ArrayList<SimpleItem> generateData() {
+            ArrayList<SimpleItem> items = new ArrayList<SimpleItem>();
+
+            items.add(new SimpleItem(-1, "Cargando Datos..."));
+
+            return items;
         }
 
         private ArrayList<SimpleItem> generateData(ArrayList<Lugares> list) {

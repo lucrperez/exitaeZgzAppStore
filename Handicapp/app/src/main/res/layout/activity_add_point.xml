@@ -62,8 +62,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="8dp" />
         <Button
-            android:paddingTop="8dp"
             android:background="@color/primary"
             android:textColor="@android:color/white"
             android:id="@+id/btn_add_accept"
