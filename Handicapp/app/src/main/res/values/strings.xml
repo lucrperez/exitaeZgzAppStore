@@ -1,13 +1,6 @@
 <resources>
     <!-- App Name -->
-    <string name="app_name">Handicapp</string>
-
-    <!-- Auto-generated Strings -->
-    <string name="hello_world">Hello world!</string>
-    <!-- TODO Change -->
-    <string name="hello_blank_fragment_r">Hello blank fragment RESTAURANTS</string>
-    <string name="hello_blank_fragment_h">Hello blank fragment HOTELS</string>
-    <string name="hello_blank_fragment_s">Hello blank fragment SUGGESTIONS</string>
+    <string name="app_name">Zaragoza Accesible</string>
 
     <!-- Action strings -->
     <string name="action_home">Home</string>
@@ -15,17 +8,18 @@
     <string name="action_map">Mapa</string>
 
     <!-- Activity Titles -->
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">Zaragoza Accesible</string>
     <string name="title_activity_home">Home</string>
     <string name="title_activity_map">Mapa</string>
     <string name="title_activity_lists">Listas</string>
     <string name="title_activity_details">Restaurantes - Detalles</string>
     <string name="title_activity_hotel">Alojamientos - Detalles</string>
+    <string name="title_activity_places">Sugerencias - Detalles</string>
 
     <!-- Tabs Titles -->
     <string name="tab_restaurants">Restaurantes</string>
     <string name="tab_hotels">Alojamientos</string>
-    <string name="tab_suggestions">sugerencias</string>
+    <string name="tab_suggestions">Sugerencias</string>
     <string name="title_activity_add_point">Añadir Lugar</string>
 
     <!-- Buttons -->
@@ -62,7 +56,5 @@
         <item>Restaurante</item>
         <item>Alojamiento</item>
     </string-array>
-    <string name="title_activity_places">PlacesActivity</string>
-    <string name="action_settings">Settings</string>
 
 </resources>
