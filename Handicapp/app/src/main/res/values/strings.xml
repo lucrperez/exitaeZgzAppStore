@@ -20,6 +20,7 @@
     <string name="title_activity_map">Mapa</string>
     <string name="title_activity_lists">Listas</string>
     <string name="title_activity_details">Restaurantes - Detalles</string>
+    <string name="title_activity_hotel">Alojamientos - Detalles</string>
 
     <!-- Tabs Titles -->
     <string name="tab_restaurants">Restaurantes</string>
@@ -47,6 +48,8 @@
     <string name="lbl_comment">Descripción: </string>
     <string name="lbl_capacity">Capacidad: </string>
     <string name="lbl_fork">Tenedores: </string>
+    <string name="lbl_beds">Camas: </string>
+    <string name="lbl_rooms">Habitaciones: </string>
     <string name="txt_zgzes">http://www.zaragoza.es</string>
 
 </resources>

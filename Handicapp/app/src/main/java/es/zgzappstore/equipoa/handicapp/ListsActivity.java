@@ -414,24 +414,42 @@ public class ListsActivity extends ActionBarActivity implements ActionBar.TabLis
 
     public static class HotelsFragment extends Fragment {
 
-        ListView lvRestaurants;
+        ListView lvHotels;
         MySimpleAdapter adapter;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             //return super.onCreateView(inflater, container, savedInstanceState);
             View rootView = inflater.inflate(R.layout.fragment_hotels, container, false);
+            lvHotels = (ListView) rootView.findViewById(R.id.hotels_list);
+            lvHotels.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    int itemID = ((SimpleItem) lvHotels.getItemAtPosition(position)).getID();
+                    if (itemID == -1) {
+                        return;
+                    }
+
+                    Intent intent = new Intent();
+                    intent.setClass(getActivity().getApplicationContext(), HotelActivity.class);
+                    intent.putExtra("LugarID", itemID);
+                    startActivity(intent);
+                }
+            });
+
+            new DownloadHotels().execute();
+
 
             return rootView;
         }
 
-        private ArrayList<SimpleItem> generateData(ArrayList<Restaurants> list) {
+        private ArrayList<SimpleItem> generateData(ArrayList<Hotels> list) {
             ArrayList<SimpleItem> items = new ArrayList<SimpleItem>();
 
             int nulos = 0;
-            for (Restaurants r : list) {
-                if (r != null) {
-                    items.add(new SimpleItem(r.getId(), r.getTitle()));
+            for (Hotels h : list) {
+                if (h != null) {
+                    items.add(new SimpleItem(h.getId(), h.getTitle()));
                 } else {
                     items.add(new SimpleItem(nulos, "NULO"));
                     nulos++;
@@ -442,16 +460,16 @@ public class ListsActivity extends ActionBarActivity implements ActionBar.TabLis
         }
 
 
-        private class DownloadRestaurants extends AsyncTask<Void, Void, ArrayList<Restaurants>> {
+        private class DownloadHotels extends AsyncTask<Void, Void, ArrayList<Hotels>> {
 
             @Override
-            protected ArrayList<Restaurants> doInBackground(Void... params) {
+            protected ArrayList<Hotels> doInBackground(Void... params) {
 
                 InputStream is = null;
                 String response = "";
 
                 try {
-                    URL url = new URL("http://www.zaragoza.es/api/recurso/turismo/restaurante.json?start=0&rows=1000&fl=id,title,streetAddress,addressLocality,accesibilidad,tel,email,url,image,logo,comment,tenedores,capacidad,geometry,link");
+                    URL url = new URL("http://www.zaragoza.es/api/recurso/turismo/alojamiento.json?start=0&rows=150&fl=id,title,accesibilidad");
                     HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     conn.setReadTimeout(10000 /* milliseconds */);
                     conn.setConnectTimeout(15000 /* milliseconds */);
@@ -475,18 +493,16 @@ public class ListsActivity extends ActionBarActivity implements ActionBar.TabLis
 
                     JSONArray array = json.getJSONArray("result");
 
-                    ArrayList<Restaurants> items = new ArrayList<Restaurants>();
+                    ArrayList<Hotels> items = new ArrayList<Hotels>();
 
                     for (int i = 0; i < array.length(); i++) {
                         JSONObject obj = array.getJSONObject(i);
 
-                        Restaurants restaurant = new Restaurants();
-                        LatLng ll;
+                        Hotels hotel = new Hotels();
 
-                        if (obj.has("accesibilidad")) restaurant.setAccesibilidad(obj.getString("accesibilidad"));
-                        else continue;
-                        if (obj.has("id")) restaurant.setId(obj.getInt("id"));
-                        if (obj.has("title")) restaurant.setTitle(obj.getString("title"));
+                        if (!obj.has("accesibilidad")) continue;
+                        if (obj.has("id")) hotel.setId(obj.getInt("id"));
+                        if (obj.has("title")) hotel.setTitle(obj.getString("title"));
                         /*if (obj.has("streetAddress")) restaurant.setStreetAddress(obj.getString("streetAddress"));
                         if (obj.has("addressLocality")) restaurant.setAddressLocality(obj.getString("addressLocality"));
                         if (obj.has("tel.tel")) restaurant.setTel(obj.getString("tel.tel"));
@@ -503,7 +519,7 @@ public class ListsActivity extends ActionBarActivity implements ActionBar.TabLis
                             restaurant.setGeometry(ll);
                         }*/
 
-                        items.add(restaurant);
+                        items.add(hotel);
 
                     }
 
@@ -591,11 +607,11 @@ public class ListsActivity extends ActionBarActivity implements ActionBar.TabLis
             }
 
             @Override
-            protected void onPostExecute(ArrayList<Restaurants> restaurants) {
-                super.onPostExecute(restaurants);
-                if (restaurants != null) {
-                    adapter = new MySimpleAdapter(getActivity().getApplicationContext(), generateData(restaurants));
-                    lvRestaurants.setAdapter(adapter);
+            protected void onPostExecute(ArrayList<Hotels> hotels) {
+                super.onPostExecute(hotels);
+                if (hotels != null) {
+                    adapter = new MySimpleAdapter(getActivity().getApplicationContext(), generateData(hotels));
+                    lvHotels.setAdapter(adapter);
                 }
             }
         }
