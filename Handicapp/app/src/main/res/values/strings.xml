@@ -41,5 +41,12 @@
     <string name="lbl_type">Tipo: </string>
     <string name="lbl_exit">Salir de la aplicación.</string>
     <string name="txt_sure_exit">¿Estas seguro que quieres salir de la aplicación?</string>
+    <string name="lbl_address">Dirección: </string>
+    <string name="lbl_phone">Teléfono: </string>
+    <string name="lbl_email">Email: </string>
+    <string name="lbl_comment">Descripción: </string>
+    <string name="lbl_capacity">Capacidad: </string>
+    <string name="lbl_fork">Tenedores: </string>
+    <string name="txt_zgzes">http://www.zaragoza.es</string>
 
 </resources>

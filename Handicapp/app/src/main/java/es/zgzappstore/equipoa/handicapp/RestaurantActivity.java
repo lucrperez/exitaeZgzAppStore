@@ -1,9 +1,13 @@
 package es.zgzappstore.equipoa.handicapp;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Html;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -23,7 +27,18 @@ import java.net.URL;
 public class RestaurantActivity extends ActionBarActivity {
 
     int itemID;
-    TextView tvText;
+
+    ImageView ivPhoto;
+    ImageView ivLogo;
+    TextView tvTitle;
+    TextView tvAddress;
+    TextView tvPhone;
+    TextView tvEmail;
+    TextView tvUrl;
+    TextView tvComment;
+    TextView tvCapacity;
+    TextView tvForks;
+    TextView tvAccessibility;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +48,18 @@ public class RestaurantActivity extends ActionBarActivity {
         Intent thisIntent = getIntent();
 
         itemID = thisIntent.getIntExtra("LugarID", -1);
-        tvText = (TextView) findViewById(R.id.details_text);
-        tvText.setText("ID del lugar = " + itemID);
+
+        ivPhoto = (ImageView) findViewById(R.id.restaurant_photo);
+        ivLogo = (ImageView) findViewById(R.id.restaurant_logo);
+        tvTitle = (TextView) findViewById(R.id.restaurant_title);
+        tvAddress = (TextView) findViewById(R.id.restaurant_address);
+        tvPhone = (TextView) findViewById(R.id.restaurant_phone);
+        tvEmail = (TextView) findViewById(R.id.restaurant_email);
+        tvUrl = (TextView) findViewById(R.id.restaurant_url);
+        tvComment = (TextView) findViewById(R.id.restaurant_comment);
+        tvCapacity = (TextView) findViewById(R.id.restaurant_capacity);
+        tvForks = (TextView) findViewById(R.id.restaurant_forks);
+        tvAccessibility = (TextView) findViewById(R.id.restaurant_accessibility);
 
         new DownloadRestaurant().execute();
     }
@@ -70,31 +95,38 @@ public class RestaurantActivity extends ActionBarActivity {
 
                 Restaurants restaurant = new Restaurants();
 
-                    if (json.has("accesibilidad"))
-                        restaurant.setAccesibilidad(json.getString("accesibilidad"));
-                    if (json.has("id")) restaurant.setId(json.getInt("id"));
-                    if (json.has("title")) restaurant.setTitle(json.getString("title"));
-                    if (json.has("streetAddress"))
-                        restaurant.setStreetAddress(json.getString("streetAddress"));
-                    if (json.has("addressLocality"))
-                        restaurant.setAddressLocality(json.getString("addressLocality"));
-                    if (json.has("tel.tel")) restaurant.setTel(json.getString("tel.tel"));
-                    if (json.has("email")) restaurant.setEmail(json.getString("email"));
-                    if (json.has("url")) restaurant.setUrl(json.getString("url"));
-                    if (json.has("image")) restaurant.setImage(json.getString("image"));
-                    if (json.has("logo")) restaurant.setLogo(json.getString("logo"));
-                    if (json.has("comment")) restaurant.setComment(json.getString("comment"));
-                    if (json.has("link")) restaurant.setLink(json.getString("link"));
-                    if (json.has("tenedores")) restaurant.setTenedores(json.getInt("tenedores"));
-                    if (json.has("capacidad")) restaurant.setCapacidad(json.getInt("capacidad"));
-                    if (json.has("geometry")) {
-                        JSONObject obj = json.getJSONObject("geometry");
-                        if (obj.has("coordinates")) {
-                            JSONArray jArray = obj.getJSONArray("coordinates");
-                            LatLng ll = new LatLng((Double) jArray.get(1), (Double) jArray.get(0));
-                            restaurant.setGeometry(ll);
-                        }
+                String zgzEs = getResources().getString(R.string.txt_zgzes);
+
+                if (json.has("accesibilidad"))
+                    restaurant.setAccesibilidad(json.getString("accesibilidad"));
+                if (json.has("id")) restaurant.setId(json.getInt("id"));
+                if (json.has("title")) restaurant.setTitle(json.getString("title"));
+                if (json.has("streetAddress"))
+                    restaurant.setStreetAddress(json.getString("streetAddress"));
+                if (json.has("addressLocality"))
+                    restaurant.setAddressLocality(json.getString("addressLocality"));
+                if (json.has("tel")) {
+                    JSONObject telObj = json.getJSONObject("tel");
+                    if (telObj.has("tel")) {
+                        restaurant.setTel(telObj.getString("tel"));
                     }
+                }
+                if (json.has("email")) restaurant.setEmail(json.getString("email"));
+                if (json.has("url")) restaurant.setUrl(json.getString("url"));
+                if (json.has("image")) restaurant.setImage(zgzEs + json.getString("image"));
+                if (json.has("logo")) restaurant.setLogo(zgzEs + json.getString("logo"));
+                if (json.has("comment")) restaurant.setComment(json.getString("comment"));
+                if (json.has("link")) restaurant.setLink(json.getString("link"));
+                if (json.has("tenedores")) restaurant.setTenedores(json.getInt("tenedores"));
+                if (json.has("capacidad")) restaurant.setCapacidad(json.getInt("capacidad"));
+                if (json.has("geometry")) {
+                    JSONObject obj = json.getJSONObject("geometry");
+                    if (obj.has("coordinates")) {
+                        JSONArray jArray = obj.getJSONArray("coordinates");
+                        LatLng ll = new LatLng((Double) jArray.get(1), (Double) jArray.get(0));
+                        restaurant.setGeometry(ll);
+                    }
+                }
                 return restaurant;
 
             } catch (JSONException e) {
@@ -193,7 +225,54 @@ public class RestaurantActivity extends ActionBarActivity {
         @Override
         protected void onPostExecute(Restaurants restaurant) {
             super.onPostExecute(restaurant);
-            tvText.setText(restaurant.getTel() + " " + restaurant.getTitle() + " " + restaurant.getGeometry().toString());
+
+            String title = getResources().getString(R.string.lbl_name);
+            String address = getResources().getString(R.string.lbl_address);
+            String phone = getResources().getString(R.string.lbl_phone);
+            String email = getResources().getString(R.string.lbl_email);
+            String comment = getResources().getString(R.string.lbl_comment);
+            String capacity = getResources().getString(R.string.lbl_capacity);
+            String forks = getResources().getString(R.string.lbl_fork);
+
+            tvTitle.setText(title + restaurant.getTitle());
+            tvAddress.setText(address + restaurant.getStreetAddress() + ", " + restaurant.getAddressLocality());
+            tvPhone.setText(phone + restaurant.getTel());
+            tvEmail.setText(email + restaurant.getEmail());
+            tvUrl.setText(restaurant.getUrl());
+            tvComment.setText(comment + restaurant.getComment());
+            tvCapacity.setText(capacity + restaurant.getCapacidad());
+            tvForks.setText(forks + restaurant.getTenedores());
+            tvAccessibility.setText(Html.fromHtml(restaurant.getAccesibilidad()));
+
+
+            new DownloadImageTask(ivPhoto).execute(restaurant.getImage());
+            if (restaurant.getLogo() != null && restaurant.getLogo() != getResources().getString(R.string.txt_zgzes)) {
+                new DownloadImageTask(ivLogo).execute(restaurant.getLogo());
+            }
+        }
+    }
+
+    private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
+        protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
+            try {
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                mIcon11 = BitmapFactory.decodeStream(in);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return mIcon11;
+        }
+
+        protected void onPostExecute(Bitmap result) {
+            bmImage.setImageBitmap(result);
         }
     }
 }
