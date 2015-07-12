@@ -58,7 +58,8 @@
         </activity>
         <activity
             android:name=".HotelActivity"
-            android:label="@string/title_activity_hotel" >
+            android:label="@string/title_activity_hotel"
+            android:screenOrientation="portrait"  >
         </activity>
     </application>
 

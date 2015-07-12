@@ -6,7 +6,17 @@ import com.google.android.gms.maps.model.LatLng;
  * Created by Manuel on 12/07/2015.
  */
 public class Lugares {
+
+    int id;
     String title, description, type;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;

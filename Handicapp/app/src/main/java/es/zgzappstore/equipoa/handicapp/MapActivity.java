@@ -37,6 +37,7 @@ import java.util.ArrayList;
 public class MapActivity extends ActionBarActivity {
 
     GoogleMap map;
+    int total;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,7 @@ public class MapActivity extends ActionBarActivity {
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setClass(getApplicationContext(), AddPointActivity.class);
+                intent.putExtra("Total", total);
                 startActivity(intent);
             }
         });
@@ -172,6 +174,9 @@ public class MapActivity extends ActionBarActivity {
                     JSONObject json = new JSONObject(String.valueOf(response));
 
                     JSONArray array = json.getJSONArray("rows");
+
+                    total = array.length();
+
                     ArrayList<Lugares> items = new ArrayList<Lugares>();
 
                     for (int i = 0; i < array.length(); i++) {

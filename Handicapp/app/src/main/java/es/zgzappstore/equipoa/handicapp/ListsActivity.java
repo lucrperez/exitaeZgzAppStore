@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,8 +30,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -187,7 +190,7 @@ public class ListsActivity extends ActionBarActivity implements ActionBar.TabLis
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 2;
+            return 3;
         }
 
         @Override
@@ -620,12 +623,150 @@ public class ListsActivity extends ActionBarActivity implements ActionBar.TabLis
 
     public static class SuggestionsFragment extends Fragment {
 
+        ListView lvSuggestions;
+        MySimpleAdapter adapter;
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             //return super.onCreateView(inflater, container, savedInstanceState);
             View rootView = inflater.inflate(R.layout.fragment_suggestions, container, false);
 
+            lvSuggestions = (ListView) rootView.findViewById(R.id.suggestions_list);
+            lvSuggestions.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    int itemID = ((SimpleItem) lvSuggestions.getItemAtPosition(position)).getID();
+                    if (itemID == -1) {
+                        return;
+                    }
+
+                    Intent intent = new Intent();
+                    intent.setClass(getActivity().getApplicationContext(), HotelActivity.class);
+                    intent.putExtra("LugarID", itemID);
+                    startActivity(intent);
+                }
+            });
+
+            new DownloadLugares().execute();
+
             return rootView;
+        }
+
+        private ArrayList<SimpleItem> generateData(ArrayList<Lugares> list) {
+            ArrayList<SimpleItem> items = new ArrayList<SimpleItem>();
+
+            int nulos = 0;
+            for (Lugares l : list) {
+                if (l != null) {
+                    items.add(new SimpleItem(l.getId(), l.getTitle()));
+                } else {
+                    items.add(new SimpleItem(nulos, "NULO"));
+                    nulos++;
+                }
+            }
+
+            return items;
+        }
+
+        private class DownloadLugares extends AsyncTask<Void, Void, ArrayList<Lugares>> {
+
+            @Override
+            protected ArrayList<Lugares> doInBackground(Void... params) {
+
+                //InputStream is = null;
+                //String response = "";
+
+                //protected ArrayList<LatLng> doInBackground(Void... params) {
+                String response = null;
+
+                try {
+                    String charset = "UTF-8";
+                    //String param1 = "INSERT INTO Lugares (id, title, description, type, long, lat) VALUES (null, 'PruebaMal', 'La prueba', 'Hotel', 2.555, 3.788);";
+                    String param1 = "SELECT * FROM lugares;";
+
+                    URLConnection conn = new URL("https://iescities.com:443/IESCities/api/data/query/287/sql").openConnection();
+                    //conn.setReadTimeout(10000);
+                    //conn.setConnectTimeout(15000);
+                    //conn.setRequestMethod("POST");
+                    //conn.setDoInput(true);
+                    conn.setDoOutput(true);
+                    //conn.setDoOutput(false);
+                    conn.setRequestProperty("Accept-Charset", charset);
+                    conn.setRequestProperty("Content-Type", "text/plain");
+
+                    final String basicAuth = "Basic " + Base64.encodeToString("handicapp:handicapp1".getBytes(), android.util.Base64.NO_WRAP);
+                    conn.setRequestProperty("Authorization", basicAuth);
+
+                    OutputStream output = conn.getOutputStream();
+                    output.write(param1.getBytes());
+
+                    conn.connect();
+
+                    InputStream is = conn.getInputStream();
+
+                    response = readIt(is);
+
+                    is.close();
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    JSONObject json = new JSONObject(String.valueOf(response));
+
+                    JSONArray array = json.getJSONArray("rows");
+
+                    total = array.length();
+
+                    ArrayList<Lugares> items = new ArrayList<Lugares>();
+
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject obj = array.getJSONObject(i);
+                        Lugares lugar = new Lugares();
+
+                        try {
+                            if (obj.has("id")) {lugar.setId(obj.getInt("id"));}
+                            if (obj.has("title")) {lugar.setTitle(obj.getString("title"));}
+                            //if (obj.has("description")) {lugar.setTitle(obj.getString("description"));}
+                            if (obj.has("type")) {if (!obj.getString("type").trim().equals("Sugerencia")) {continue;}}
+                            //if (obj.has("long")) {lugar.setGeometry(new LatLng(obj.getDouble("long"),obj.getDouble("lat")));}
+
+                            items.add(lugar);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    return items;
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                return null;
+            }
+
+            public String readIt(InputStream stream) throws IOException {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "utf-8"), 8);
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line + "n");
+                }
+                return sb.toString();
+            }
+
+            @Override
+            protected void onPostExecute(ArrayList<Lugares> Listll) {
+                super.onPostExecute(Listll);
+                if (Listll != null) {
+                    adapter = new MySimpleAdapter(getActivity().getApplicationContext(), generateData(Listll));
+                    lvSuggestions.setAdapter(adapter);
+                }
+            }
         }
 
     }

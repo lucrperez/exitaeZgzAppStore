@@ -51,5 +51,16 @@
     <string name="lbl_beds">Camas: </string>
     <string name="lbl_rooms">Habitaciones: </string>
     <string name="txt_zgzes">http://www.zaragoza.es</string>
+    <string name="txt_select_type">Elige un tipo</string>
+    <string name="txt_select_point">Elige un punto del mapa</string>
+    <string name="txt_select_title">Elige un titulo para el punto</string>
+    <string name="txt_select_description">Elige una descripción para el punto</string>
+
+    <!-- Spinner -->
+    <string-array name="suggestion_types">
+        <item>Sugerencia</item>
+        <item>Restaurante</item>
+        <item>Alojamiento</item>
+    </string-array>
 
 </resources>
