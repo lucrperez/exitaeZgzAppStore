@@ -187,7 +187,7 @@ public class ListsActivity extends ActionBarActivity implements ActionBar.TabLis
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 2;
         }
 
         @Override
@@ -414,12 +414,190 @@ public class ListsActivity extends ActionBarActivity implements ActionBar.TabLis
 
     public static class HotelsFragment extends Fragment {
 
+        ListView lvRestaurants;
+        MySimpleAdapter adapter;
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             //return super.onCreateView(inflater, container, savedInstanceState);
             View rootView = inflater.inflate(R.layout.fragment_hotels, container, false);
 
             return rootView;
+        }
+
+        private ArrayList<SimpleItem> generateData(ArrayList<Restaurants> list) {
+            ArrayList<SimpleItem> items = new ArrayList<SimpleItem>();
+
+            int nulos = 0;
+            for (Restaurants r : list) {
+                if (r != null) {
+                    items.add(new SimpleItem(r.getId(), r.getTitle()));
+                } else {
+                    items.add(new SimpleItem(nulos, "NULO"));
+                    nulos++;
+                }
+            }
+
+            return items;
+        }
+
+
+        private class DownloadRestaurants extends AsyncTask<Void, Void, ArrayList<Restaurants>> {
+
+            @Override
+            protected ArrayList<Restaurants> doInBackground(Void... params) {
+
+                InputStream is = null;
+                String response = "";
+
+                try {
+                    URL url = new URL("http://www.zaragoza.es/api/recurso/turismo/restaurante.json?start=0&rows=1000&fl=id,title,streetAddress,addressLocality,accesibilidad,tel,email,url,image,logo,comment,tenedores,capacidad,geometry,link");
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setReadTimeout(10000 /* milliseconds */);
+                    conn.setConnectTimeout(15000 /* milliseconds */);
+                    conn.setRequestMethod("GET");
+                    conn.setDoInput(true);
+
+                    conn.connect();
+                    is = conn.getInputStream();
+
+                    response = readIt(is);
+
+                    is.close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    JSONObject json = new JSONObject(response);
+                    total = json.getInt("totalCount");
+
+                    JSONArray array = json.getJSONArray("result");
+
+                    ArrayList<Restaurants> items = new ArrayList<Restaurants>();
+
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject obj = array.getJSONObject(i);
+
+                        Restaurants restaurant = new Restaurants();
+                        LatLng ll;
+
+                        if (obj.has("accesibilidad")) restaurant.setAccesibilidad(obj.getString("accesibilidad"));
+                        else continue;
+                        if (obj.has("id")) restaurant.setId(obj.getInt("id"));
+                        if (obj.has("title")) restaurant.setTitle(obj.getString("title"));
+                        /*if (obj.has("streetAddress")) restaurant.setStreetAddress(obj.getString("streetAddress"));
+                        if (obj.has("addressLocality")) restaurant.setAddressLocality(obj.getString("addressLocality"));
+                        if (obj.has("tel.tel")) restaurant.setTel(obj.getString("tel.tel"));
+                        if (obj.has("email")) restaurant.setEmail(obj.getString("email"));
+                        if (obj.has("url")) restaurant.setUrl(obj.getString("url"));
+                        if (obj.has("image")) restaurant.setImage(obj.getString("image"));
+                        if (obj.has("logo")) restaurant.setLogo(obj.getString("logo"));
+                        if (obj.has("comment")) restaurant.setComment(obj.getString("comment"));
+                        if (obj.has("link")) restaurant.setLink(obj.getString("link"));
+                        if (obj.has("tenedores")) restaurant.setTenedores(obj.getInt("tenedores"));
+                        if (obj.has("capacidad")) restaurant.setCapacidad(obj.getInt("capacidad"));
+                        if (obj.has("geometry")) {
+                            ll = new LatLng(obj.getDouble("geometry.coordinates[0]"), obj.getDouble("geometry.coordinates[1]"));
+                            restaurant.setGeometry(ll);
+                        }*/
+
+                        items.add(restaurant);
+
+                    }
+
+                    return items;
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+
+
+
+
+
+                /*String response = null;
+
+                try {
+                    String charset = "UTF-8";
+                    String param1 = "select * , GROUP_CONCAT(result_geometry_coordinates.geometry) as coordinates \n" +
+                            "from result, result_geometry, result_geometry_coordinates \n" +
+                            "where result_geometry.parent_id=result.id and result_geometry_coordinates.parent_id=result_geometry._id\n" +
+                            "GROUP BY result.id;";
+                    URLConnection conn = new URL("https://iescities.com:443/IESCities/api/data/query/279/sql?origin=original").openConnection();
+                    //conn.setReadTimeout(10000);
+                    //conn.setConnectTimeout(15000);
+                    //conn.setRequestMethod("POST");
+                    //conn.setDoInput(true);
+                    conn.setDoOutput(true);
+                    conn.setRequestProperty("Accept-Charset", charset);
+                    conn.setRequestProperty("Content-Type", "text/plain");
+
+                    OutputStream output = conn.getOutputStream();
+                    output.write(param1.getBytes());
+
+
+                    conn.connect();
+                    InputStream is = conn.getInputStream();
+
+                    response = readIt(is);
+
+                    is.close();
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }*/
+
+                /*try {
+                    JSONObject json = new JSONObject(String.valueOf(response));
+                    int total = json.getInt("count");
+
+                    JSONArray array = json.getJSONArray("rows");
+
+                    ArrayList<LatLng> items = new ArrayList<LatLng>();
+
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject obj = array.getJSONObject(i);
+
+                        try {
+                            items.add(new LatLng(obj.getDouble("lat"), obj.getDouble("lng")));
+
+                        } catch (JSONException e) {
+
+                        }
+                    }
+
+                    return items;
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }*/
+
+                return null;
+            }
+
+            public String readIt(InputStream stream) throws IOException {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "utf-8"), 8);
+                StringBuilder sb = new StringBuilder();
+                String line = null;
+                while ((line = reader.readLine()) != null) {
+                    sb.append(line + "n");
+                }
+                return sb.toString();
+            }
+
+            @Override
+            protected void onPostExecute(ArrayList<Restaurants> restaurants) {
+                super.onPostExecute(restaurants);
+                if (restaurants != null) {
+                    adapter = new MySimpleAdapter(getActivity().getApplicationContext(), generateData(restaurants));
+                    lvRestaurants.setAdapter(adapter);
+                }
+            }
         }
 
     }

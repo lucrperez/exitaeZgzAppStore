@@ -3,6 +3,7 @@ package es.zgzappstore.equipoa.handicapp;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -13,7 +14,21 @@ import android.widget.Button;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
 
 
 public class MapActivity extends ActionBarActivity {
@@ -35,10 +50,12 @@ public class MapActivity extends ActionBarActivity {
             }
         });
 
-        LatLng ll = new LatLng(41.6532341,-0.8870108);
-        float zoom = (float) 12.0;
+        LatLng ll = new LatLng(41.647475,-0.885705);
+        float zoom = (float) 16.0;
         map = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMap();
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(ll, zoom));
+
+        new DownloadParkings().execute();
     }
 
     @Override
@@ -99,5 +116,92 @@ public class MapActivity extends ActionBarActivity {
 
     private void customBack() {
         super.onBackPressed();
+    }
+
+
+
+
+    private class DownloadParkings extends AsyncTask<Void, Void, ArrayList<LatLng>> {
+
+        @Override
+        protected ArrayList<LatLng> doInBackground(Void... params) {
+
+            InputStream is = null;
+            String response = "";
+
+            try {
+                URL url = new URL("http://www.zaragoza.es/api/recurso/urbanismo-infraestructuras/equipamiento/aparcamiento-personas-discapacidad.json?start=0&rows=500&srsname=wgs84&fl=title,geometry");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(10000 /* milliseconds */);
+                conn.setConnectTimeout(15000 /* milliseconds */);
+                conn.setRequestMethod("GET");
+                conn.setDoInput(true);
+
+                conn.connect();
+                is = conn.getInputStream();
+
+                response = readIt(is);
+
+                is.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            try {
+                JSONObject json = new JSONObject(response);
+
+                JSONArray array = json.getJSONArray("result");
+
+                ArrayList<LatLng> items = new ArrayList<LatLng>();
+
+                for (int i = 0; i < array.length(); i++) {
+                    JSONObject obj = array.getJSONObject(i);
+
+                    LatLng ll;
+
+
+                    if (obj.has("geometry")) {
+                        JSONObject obj2 = obj.getJSONObject("geometry");
+                        if (obj2.has("coordinates")) {
+                            JSONArray jArray = obj2.getJSONArray("coordinates");
+                            ll = new LatLng((Double) jArray.get(1), (Double) jArray.get(0));
+                            items.add(ll);
+                        }
+                    }
+
+                }
+
+                return items;
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+        public String readIt(InputStream stream) throws IOException {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "utf-8"), 8);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "n");
+            }
+            return sb.toString();
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<LatLng> Listll) {
+            super.onPostExecute(Listll);
+
+            for (LatLng ll : Listll) {
+                map.addMarker(new MarkerOptions()
+                        .position(ll)
+                        .draggable(false)
+                        .visible(true)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+            }
+        }
     }
 }
