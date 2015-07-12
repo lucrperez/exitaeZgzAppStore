@@ -185,8 +185,8 @@ public class MapActivity extends ActionBarActivity {
 
                         try {
                             if (obj.has("title")) {lugar.setTitle(obj.getString("title"));}
-                            if (obj.has("description")) {lugar.setTitle(obj.getString("description"));}
-                            if (obj.has("type")) {lugar.setTitle(obj.getString("type"));}
+                            if (obj.has("description")) {lugar.setDescription(obj.getString("description"));}
+                            if (obj.has("type")) {lugar.setType(obj.getString("type"));}
                             if (obj.has("long")) {lugar.setGeometry(new LatLng(obj.getDouble("long"),obj.getDouble("lat")));}
 
                             items.add(lugar);
@@ -224,7 +224,8 @@ public class MapActivity extends ActionBarActivity {
                         .position(ll.getGeometry())
                         .draggable(false)
                         .visible(true)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                        .title(ll.getTitle()));
             }
         }
     }
@@ -309,7 +310,8 @@ public class MapActivity extends ActionBarActivity {
                         .position(ll)
                         .draggable(false)
                         .visible(true)
-                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                        .title("Estacionamiento para discapacitados"));
             }
         }
     }

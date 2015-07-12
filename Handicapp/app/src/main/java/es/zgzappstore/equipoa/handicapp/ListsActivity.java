@@ -641,7 +641,7 @@ public class ListsActivity extends ActionBarActivity implements ActionBar.TabLis
                     }
 
                     Intent intent = new Intent();
-                    intent.setClass(getActivity().getApplicationContext(), HotelActivity.class);
+                    intent.setClass(getActivity().getApplicationContext(), PlacesActivity.class);
                     intent.putExtra("LugarID", itemID);
                     startActivity(intent);
                 }

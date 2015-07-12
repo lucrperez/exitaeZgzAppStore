@@ -62,5 +62,7 @@
         <item>Restaurante</item>
         <item>Alojamiento</item>
     </string-array>
+    <string name="title_activity_places">PlacesActivity</string>
+    <string name="action_settings">Settings</string>
 
 </resources>
