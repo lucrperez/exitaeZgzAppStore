@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,8 +27,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 
 
@@ -56,6 +59,7 @@ public class MapActivity extends ActionBarActivity {
         map.animateCamera(CameraUpdateFactory.newLatLngZoom(ll, zoom));
 
         new DownloadParkings().execute();
+        new DownloadLugares().execute();
     }
 
     @Override
@@ -119,6 +123,106 @@ public class MapActivity extends ActionBarActivity {
     }
 
 
+    private class DownloadLugares extends AsyncTask<Void, Void, ArrayList<Lugares>> {
+
+        @Override
+        protected ArrayList<Lugares> doInBackground(Void... params) {
+
+            //InputStream is = null;
+            //String response = "";
+
+            //protected ArrayList<LatLng> doInBackground(Void... params) {
+                String response = null;
+
+                try {
+                    String charset = "UTF-8";
+                    //String param1 = "INSERT INTO Lugares (id, title, description, type, long, lat) VALUES (null, 'PruebaMal', 'La prueba', 'Hotel', 2.555, 3.788);";
+                    String param1 = "SELECT * FROM lugares;";
+
+                    URLConnection conn = new URL("https://iescities.com:443/IESCities/api/data/query/287/sql").openConnection();
+                    //conn.setReadTimeout(10000);
+                    //conn.setConnectTimeout(15000);
+                    //conn.setRequestMethod("POST");
+                    //conn.setDoInput(true);
+                    conn.setDoOutput(true);
+                    //conn.setDoOutput(false);
+                    conn.setRequestProperty("Accept-Charset", charset);
+                    conn.setRequestProperty("Content-Type", "text/plain");
+
+                    final String basicAuth = "Basic " + Base64.encodeToString("handicapp:handicapp1".getBytes(), android.util.Base64.NO_WRAP);
+                    conn.setRequestProperty("Authorization", basicAuth);
+
+                    OutputStream output = conn.getOutputStream();
+                    output.write(param1.getBytes());
+
+                    conn.connect();
+
+                    InputStream is = conn.getInputStream();
+
+                    response = readIt(is);
+
+                    is.close();
+
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    JSONObject json = new JSONObject(String.valueOf(response));
+
+                    JSONArray array = json.getJSONArray("rows");
+                    ArrayList<Lugares> items = new ArrayList<Lugares>();
+
+                    for (int i = 0; i < array.length(); i++) {
+                        JSONObject obj = array.getJSONObject(i);
+                        Lugares lugar = new Lugares();
+
+                        try {
+                            if (obj.has("title")) {lugar.setTitle(obj.getString("title"));}
+                            if (obj.has("description")) {lugar.setTitle(obj.getString("description"));}
+                            if (obj.has("type")) {lugar.setTitle(obj.getString("type"));}
+                            if (obj.has("long")) {lugar.setGeometry(new LatLng(obj.getDouble("long"),obj.getDouble("lat")));}
+
+                            items.add(lugar);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    return items;
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                return null;
+            }
+
+        public String readIt(InputStream stream) throws IOException {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(stream, "utf-8"), 8);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "n");
+            }
+            return sb.toString();
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<Lugares> Listll) {
+            super.onPostExecute(Listll);
+
+            for (Lugares ll : Listll) {
+                map.addMarker(new MarkerOptions()
+                        .position(ll.getGeometry())
+                        .draggable(false)
+                        .visible(true)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+            }
+        }
+    }
 
 
     private class DownloadParkings extends AsyncTask<Void, Void, ArrayList<LatLng>> {
